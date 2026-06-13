@@ -37,6 +37,10 @@ func TestСonversion(t *testing.T) {
 			number: 0x01020304,
 			result: 0x04030201,
 		},
+		"test case #6": {
+			number: 0x12345678,
+			result: 0x78563412,
+		},
 	}
 
 	for name, test := range tests {
