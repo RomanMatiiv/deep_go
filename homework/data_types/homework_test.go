@@ -8,11 +8,7 @@ import (
 
 // go test -v homework_test.go
 
-func ToLittleEndian(number uint32) uint32 {
-	return 0 // need to implement
-}
-
-func TestСonversion(t *testing.T) {
+func TestConversion(t *testing.T) {
 	tests := map[string]struct {
 		number uint32
 		result uint32
@@ -36,6 +32,10 @@ func TestСonversion(t *testing.T) {
 		"test case #5": {
 			number: 0x01020304,
 			result: 0x04030201,
+		},
+		"test case #6": {
+			number: 0x12345678,
+			result: 0x78563412,
 		},
 	}
 
