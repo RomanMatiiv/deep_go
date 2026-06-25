@@ -7,40 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// go test -v homework_test.go
-
-type CircularQueue struct {
-	values []int
-	// need to implement
-}
-
-func NewCircularQueue(size int) CircularQueue {
-	return CircularQueue{} // need to implement
-}
-
-func (q *CircularQueue) Push(value int) bool {
-	return false // need to implement
-}
-
-func (q *CircularQueue) Pop() bool {
-	return false // need to implement
-}
-
-func (q *CircularQueue) Front() int {
-	return -1 // need to implement
-}
-
-func (q *CircularQueue) Back() int {
-	return -1 // need to implement
-}
-
-func (q *CircularQueue) Empty() bool {
-	return false // need to implement
-}
-
-func (q *CircularQueue) Full() bool {
-	return false // need to implement
-}
+//go test -v ./homework/slices_and_arrays
 
 func TestCircularQueue(t *testing.T) {
 	const queueSize = 3

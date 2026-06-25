@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// go test -v homework_test.go
+//go test -v ./homework/data_types
 
 func TestConversion(t *testing.T) {
 	tests := map[string]struct {
