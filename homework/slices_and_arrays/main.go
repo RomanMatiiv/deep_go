@@ -44,13 +44,23 @@ type Queue interface {
 }
 
 type CircularQueue struct {
-	values []int
-	// todo
+	values   []int
+	initSize int
 }
 
 func NewCircularQueue(size int) CircularQueue {
-	// todo
-	return CircularQueue{}
+	values := make([]int, 0, 3)
+	return CircularQueue{
+		initSize: size,
+		values:   values}
+}
+
+func (q *CircularQueue) Empty() bool {
+	return len(q.values) == 0
+}
+
+func (q *CircularQueue) Full() bool {
+	return len(q.values) == q.initSize
 }
 
 func (q *CircularQueue) Push(value int) bool {
@@ -71,14 +81,4 @@ func (q *CircularQueue) Front() int {
 func (q *CircularQueue) Back() int {
 	// todo
 	return 1
-}
-
-func (q *CircularQueue) Empty() bool {
-	// todo
-	return false
-}
-
-func (q *CircularQueue) Full() bool {
-	// todo
-	return false
 }
