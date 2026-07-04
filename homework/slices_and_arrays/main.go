@@ -49,10 +49,14 @@ type CircularQueue struct {
 }
 
 func NewCircularQueue(size int) CircularQueue {
-	values := make([]int, 0, 3)
+	slog.Debug(fmt.Sprintf("Init queue with initSize: %d", size))
 	return CircularQueue{
 		initSize: size,
-		values:   values}
+		//curSize: 0,
+		//curIdx: 0,
+		headIdx: 0,
+		tailIdx: 0,
+		values:  make([]int, size, size)}
 }
 
 // Empty проверить пустая ли очередь
