@@ -57,7 +57,13 @@ func NewCircularQueue(size int) CircularQueue {
 
 // Empty проверить пустая ли очередь
 func (q *CircularQueue) Empty() bool {
-	return len(q.values) == 0
+	slog.Debug(fmt.Sprintf("Empty() when head=%d tail=%d", q.headIdx, q.tailIdx))
+
+	if q.headIdx == q.tailIdx {
+		return true
+	}
+
+	return false
 }
 
 // Full проверить заполнена ли очередь
