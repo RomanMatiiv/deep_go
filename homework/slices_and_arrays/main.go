@@ -68,7 +68,35 @@ func (q *CircularQueue) Empty() bool {
 
 // Full проверить заполнена ли очередь
 func (q *CircularQueue) Full() bool {
-	return len(q.values) == q.initSize
+	slog.Debug(fmt.Sprintf("Full() when head=%d tail=%d", q.headIdx, q.tailIdx))
+
+	if q.headIdx == q.tailIdx {
+		if q.headIdx == 0 && q.tailIdx == 0 {
+			return false
+		}
+		panic("equal index, not in start")
+	}
+
+	// когда headIdx < tailIdx
+	// h,_,_,t ; t-h<initSize-1 ; true
+	// h,_,t,_ ; t-h<initSize-1 ; false
+	if q.headIdx < q.tailIdx {
+		return q.tailIdx-q.headIdx == q.initSize
+	}
+
+	// todo переделать
+	// когда tailIdx < headIdx
+	// _,t,_,h min,max = minMax(head, tail); max-min>1 false
+	// _,_,t,h min,max = minMax(head, tail); max-min>1 true
+	// t,_,h,_ min,max = minMax(head, tail); max-min>1 false
+	// _,t,h,_ min,max = minMax(head, tail); max-min>1 true
+	minIdx := min(q.headIdx, q.tailIdx)
+	maxIdx := max(q.headIdx, q.tailIdx)
+	if q.tailIdx < q.headIdx {
+		return maxIdx-minIdx > 1
+	}
+
+	panic("impossible situation")
 }
 
 // Push добавить значение в конец очереди (false, если очередь заполнена)
