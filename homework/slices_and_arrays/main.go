@@ -73,8 +73,41 @@ func (q *CircularQueue) Full() bool {
 
 // Push добавить значение в конец очереди (false, если очередь заполнена)
 func (q *CircularQueue) Push(value int) bool {
-	//todo
-	return false
+	if q.Full() {
+		return false
+	}
+
+	slog.Debug(fmt.Sprintf("Push(%d) when head=%d tail=%d", value, q.headIdx, q.tailIdx))
+
+	idx := -1
+	// ht,_,_,_,_
+	if q.tailIdx == 0 && q.headIdx == 0 {
+		idx = 1
+	}
+	// head,tail,_,_,_
+
+	// _,head,_,tail,_
+	if q.tailIdx < q.initSize && q.tailIdx > q.headIdx {
+		idx = q.tailIdx + 1
+		// _,head,_,_,tail
+
+		// _,_,_,head,tail
+	} else if q.tailIdx == q.initSize && q.headIdx > 0 {
+		idx = 0
+
+		// _,tail,_,head,_
+	} else if q.tailIdx < q.headIdx && q.headIdx > 0 {
+		idx = min(0, q.headIdx, q.tailIdx)
+	}
+
+	if idx == -1 {
+		panic("out of range")
+	}
+
+	q.values[idx-1] = value
+	q.tailIdx = idx
+
+	return true
 }
 
 // Pop удалить значение из начала очереди (false, если очередь пустая)
