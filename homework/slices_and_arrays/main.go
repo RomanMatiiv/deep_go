@@ -37,9 +37,9 @@ package main
 type Queue interface {
 	Push(value int) bool // добавить значение в конец очереди (false, если очередь заполнена)
 	Pop() bool           // удалить значение из начала очереди (false, если очередь пустая)
-	Front() int          // удалить значение из начала очереди (false, если очередь пустая)
+	Front() int          // получить значение из начала очереди (-1, если очередь пустая)
 	Back() int           // получить значение из конца очереди (-1, если очередь пустая)
-	Empty() bool         /// проверить пустая ли очередь
+	Empty() bool         // проверить пустая ли очередь
 	Full() bool          // проверить заполнена ли очередь
 }
 
@@ -55,29 +55,35 @@ func NewCircularQueue(size int) CircularQueue {
 		values:   values}
 }
 
+// Empty проверить пустая ли очередь
 func (q *CircularQueue) Empty() bool {
 	return len(q.values) == 0
 }
 
+// Full проверить заполнена ли очередь
 func (q *CircularQueue) Full() bool {
 	return len(q.values) == q.initSize
 }
 
+// Push добавить значение в конец очереди (false, если очередь заполнена)
 func (q *CircularQueue) Push(value int) bool {
 	//todo
 	return false
 }
 
+// Pop удалить значение из начала очереди (false, если очередь пустая)
 func (q *CircularQueue) Pop() bool {
 	// todo
 	return false
 }
 
+// Front вернуть значение из начала очереди (-1, если очередь пустая)
 func (q *CircularQueue) Front() int {
 	// todo
 	return 1
 }
 
+// Back получить значение из конца очереди (-1, если очередь пустая)
 func (q *CircularQueue) Back() int {
 	// todo
 	return 1
