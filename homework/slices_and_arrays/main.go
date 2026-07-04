@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"log/slog"
+)
+
 // В домашнем задании нужно реализовать кольцевую очередь (Circular Queue).
 //
 // **Кольцевая очередь** (*Circular Queue*) — это структура данных,
@@ -46,6 +51,10 @@ type Queue interface {
 type CircularQueue struct {
 	values   []int
 	initSize int
+	//curSize int
+	//curIdx int
+	headIdx int // всегда указывает на первый(или нулевой) элемент
+	tailIdx int // всегда указывает на элемент следующий за последним
 }
 
 func NewCircularQueue(size int) CircularQueue {
@@ -144,18 +153,26 @@ func (q *CircularQueue) Push(value int) bool {
 
 // Pop удалить значение из начала очереди (false, если очередь пустая)
 func (q *CircularQueue) Pop() bool {
-	// todo
-	return false
+	if q.Empty() {
+		return false
+	}
+	return true
 }
 
 // Front вернуть значение из начала очереди (-1, если очередь пустая)
 func (q *CircularQueue) Front() int {
-	// todo
+	if q.Empty() {
+		return -1
+	}
+	//todo
 	return 1
 }
 
 // Back получить значение из конца очереди (-1, если очередь пустая)
 func (q *CircularQueue) Back() int {
-	// todo
+	if q.Empty() {
+		return -1
+	}
+	//todo
 	return 1
 }
