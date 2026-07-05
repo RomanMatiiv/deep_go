@@ -98,8 +98,6 @@ func TestEasyCaseFront(t *testing.T) {
 }
 
 func TestEasyCaseBack(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 

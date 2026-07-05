@@ -151,6 +151,15 @@ func (q *CircularQueue) Push(value int) bool {
 	return true
 }
 
+// Back получить значение из конца очереди (-1, если очередь пустая)
+func (q *CircularQueue) Back() int {
+	if q.Empty() {
+		return -1
+	}
+
+	return q.values[q.tailIdx-1]
+}
+
 // Pop удалить значение из начала очереди (false, если очередь пустая)
 func (q *CircularQueue) Pop() bool {
 	if q.Empty() {
@@ -161,15 +170,6 @@ func (q *CircularQueue) Pop() bool {
 
 // Front вернуть значение из начала очереди (-1, если очередь пустая)
 func (q *CircularQueue) Front() int {
-	if q.Empty() {
-		return -1
-	}
-	//todo
-	return 1
-}
-
-// Back получить значение из конца очереди (-1, если очередь пустая)
-func (q *CircularQueue) Back() int {
 	if q.Empty() {
 		return -1
 	}
