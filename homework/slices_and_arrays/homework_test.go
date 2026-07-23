@@ -300,6 +300,37 @@ func TestCircularQueue(t *testing.T) {
 	assert.False(t, queue.Full())
 }
 
+func TestPopWrappedNotAtEnd(t *testing.T) {
+	queue := NewCircularQueue(4) //_,_,_,_
+	queue.Push(1)                //1,_,_,_
+	queue.Push(2)                //1,2,_,_
+	queue.Push(3)                //1,2,3,_
+	queue.Push(4)                //1,2,3,4
+	queue.Pop()                  //_,2,3,4
+	queue.Pop()                  //_,_,3,4
+	queue.Push(5)                //5,_,3,4
+
+	queue.Pop()                       //5,_,_,4
+	assert.Equal(t, 4, queue.Front()) // сейчас упадёт
+}
+
+func TestPushIntoGapWhenWrapped(t *testing.T) {
+	const queueSize = 4
+	queue := NewCircularQueue(queueSize) //_,_,_,_
+	queue.Push(1)                        //1,_,_,_
+	queue.Push(2)                        //1,2,_,_
+	queue.Push(3)                        //1,2,3,_
+	queue.Push(4)                        //1,2,3,4
+	queue.Pop()                          //_,2,3,4
+	queue.Pop()                          //_,_,3,4
+	queue.Push(5)                        //5,_,3,4
+	assert.True(t, queue.Push(6))
+
+	assert.Equal(t, 3, queue.Front())
+	assert.Equal(t, 6, queue.Back())
+	assert.True(t, reflect.DeepEqual([]int{5, 6, 3, 4}, queue.values))
+}
+
 func init() {
 
 	logHandler := slog.NewTextHandler(
