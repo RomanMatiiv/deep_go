@@ -53,12 +53,12 @@ type CircularQueue struct {
 	initSize int
 	curSize  int
 	//curIdx int
-	headIdx int // всегда указывает на первый(или нулевой) элемент
-	tailIdx int // всегда указывает на элемент следующий за последним
+	headIdx int // всегда указывает на первый(или нулевой) элемент. Инвариант.
+	tailIdx int // всегда указывает на элемент следующий за последним. Инвариант.
 }
 
 func NewCircularQueue(size int) CircularQueue {
-	slog.Debug(fmt.Sprintf("Init queue with initSize: %d", size))
+	slog.Debug(fmt.Sprintf("Init(size=%d)", size))
 	return CircularQueue{
 		initSize: size,
 		curSize:  0,
@@ -83,11 +83,15 @@ func (q *CircularQueue) Full() bool {
 
 // Push добавить значение в конец очереди (false, если очередь заполнена)
 func (q *CircularQueue) Push(value int) bool {
+	slog.Debug(fmt.Sprintf("Push(%d) start", value))
+	defer func() { slog.Debug(fmt.Sprintf("Push(%d) end", value)) }()
+
 	if q.Full() {
 		return false
 	}
 
-	slog.Debug(fmt.Sprintf("Push(%d) when head=%d tail=%d", value, q.headIdx, q.tailIdx))
+	slog.Debug(fmt.Sprintf("before Push(%d) when head=%d tail=%d", value, q.headIdx, q.tailIdx))
+	defer func() { slog.Debug(fmt.Sprintf("after Push(%d) when head=%d tail=%d", value, q.headIdx, q.tailIdx)) }()
 
 	idx := -1
 	// ht,_,_,_,_
@@ -131,6 +135,11 @@ func (q *CircularQueue) Back() int {
 
 // Pop удалить значение из начала очереди (false, если очередь пустая)
 func (q *CircularQueue) Pop() bool {
+	slog.Debug("Pop()")
+
+	slog.Debug(fmt.Sprintf("before Pop() when head=%d tail=%d", q.headIdx, q.tailIdx))
+	defer func() { slog.Debug(fmt.Sprintf("after Pop() when head=%d tail=%d", q.headIdx, q.tailIdx)) }()
+
 	if q.Empty() {
 		return false
 	}
