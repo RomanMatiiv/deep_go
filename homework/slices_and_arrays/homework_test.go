@@ -119,6 +119,24 @@ func TestPopEasyCase(t *testing.T) {
 	assert.True(t, queue.Pop())
 }
 
+func TestPopWhenHeadAfterTail(t *testing.T) {
+	const queueSize = 3
+	queue := NewCircularQueue(queueSize)
+
+	queue.Push(1)
+	queue.Push(2)
+	queue.Push(3)
+
+	// 1,2,3
+	queue.Pop()
+	// _,2,3
+	queue.Pop()
+	// _,_,3 : [_,_,head]tail
+	queue.Push(4)
+	// 4,_,3
+	assert.True(t, queue.Pop())
+}
+
 func TestEmptyAfterPop(t *testing.T) {
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
@@ -132,8 +150,6 @@ func TestEmptyAfterPop(t *testing.T) {
 }
 
 func TestFullAfterPop(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -146,8 +162,6 @@ func TestFullAfterPop(t *testing.T) {
 }
 
 func TestPushAfterPopToFirstElem(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -162,8 +176,6 @@ func TestPushAfterPopToFirstElem(t *testing.T) {
 }
 
 func TestFrontAfterPushFirstElem(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -182,8 +194,6 @@ func TestFrontAfterPushFirstElem(t *testing.T) {
 }
 
 func TestBackAfterPushFirstElem(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -202,8 +212,6 @@ func TestBackAfterPushFirstElem(t *testing.T) {
 }
 
 func TestPopToEmpty(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -225,8 +233,6 @@ func TestPopToEmpty(t *testing.T) {
 }
 
 func TestEmptyAfterFourPop(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -250,8 +256,6 @@ func TestEmptyAfterFourPop(t *testing.T) {
 }
 
 func TestFullAfterFourPop(t *testing.T) {
-	t.Skipf("не реализовано")
-
 	const queueSize = 3
 	queue := NewCircularQueue(queueSize)
 
@@ -274,28 +278,27 @@ func TestFullAfterFourPop(t *testing.T) {
 	assert.False(t, queue.Full())
 }
 
-//func TestCircularQueue(t *testing.T) {
-//	const queueSize = 3
-//	queue := NewCircularQueue(queueSize)
-//
-//	assert.True(t, queue.Push(1))
-//	assert.True(t, queue.Push(2))
-//	assert.True(t, queue.Push(3))
-//
-//	assert.True(t, queue.Pop())
-//	assert.True(t, queue.Push(4))
-//
-//	assert.True(t, reflect.DeepEqual([]int{4, 2, 3}, queue.values))
-//
-//
-//	assert.True(t, queue.Pop())
-//	assert.True(t, queue.Pop())
-//	assert.True(t, queue.Pop())
-//	assert.False(t, queue.Pop())
-//
-//	assert.True(t, queue.Empty())
-//	assert.False(t, queue.Full())
-//}
+func TestCircularQueue(t *testing.T) {
+	const queueSize = 3
+	queue := NewCircularQueue(queueSize)
+
+	assert.True(t, queue.Push(1))
+	assert.True(t, queue.Push(2))
+	assert.True(t, queue.Push(3))
+
+	assert.True(t, queue.Pop())
+	assert.True(t, queue.Push(4))
+
+	assert.True(t, reflect.DeepEqual([]int{4, 2, 3}, queue.values))
+
+	assert.True(t, queue.Pop())
+	assert.True(t, queue.Pop())
+	assert.True(t, queue.Pop())
+	assert.False(t, queue.Pop())
+
+	assert.True(t, queue.Empty())
+	assert.False(t, queue.Full())
+}
 
 func init() {
 
