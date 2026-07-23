@@ -51,7 +51,7 @@ type Queue interface {
 type CircularQueue struct {
 	values   []int
 	initSize int
-	//curSize int
+	curSize  int
 	//curIdx int
 	headIdx int // всегда указывает на первый(или нулевой) элемент
 	tailIdx int // всегда указывает на элемент следующий за последним
@@ -61,7 +61,7 @@ func NewCircularQueue(size int) CircularQueue {
 	slog.Debug(fmt.Sprintf("Init queue with initSize: %d", size))
 	return CircularQueue{
 		initSize: size,
-		//curSize: 0,
+		curSize:  0,
 		//curIdx: 0,
 		headIdx: 0,
 		tailIdx: 0,
@@ -71,45 +71,14 @@ func NewCircularQueue(size int) CircularQueue {
 // Empty проверить пустая ли очередь
 func (q *CircularQueue) Empty() bool {
 	slog.Debug(fmt.Sprintf("Empty() when head=%d tail=%d", q.headIdx, q.tailIdx))
-
-	if q.headIdx == q.tailIdx {
-		return true
-	}
-
-	return false
+	return q.curSize == 0
 }
 
 // Full проверить заполнена ли очередь
 func (q *CircularQueue) Full() bool {
 	slog.Debug(fmt.Sprintf("Full() when head=%d tail=%d", q.headIdx, q.tailIdx))
 
-	if q.headIdx == q.tailIdx {
-		if q.headIdx == 0 && q.tailIdx == 0 {
-			return false
-		}
-		panic("equal index, not in start")
-	}
-
-	// когда headIdx < tailIdx
-	// h,_,_,t ; t-h<initSize-1 ; true
-	// h,_,t,_ ; t-h<initSize-1 ; false
-	if q.headIdx < q.tailIdx {
-		return q.tailIdx-q.headIdx == q.initSize
-	}
-
-	// todo переделать
-	// когда tailIdx < headIdx
-	// _,t,_,h min,max = minMax(head, tail); max-min>1 false
-	// _,_,t,h min,max = minMax(head, tail); max-min>1 true
-	// t,_,h,_ min,max = minMax(head, tail); max-min>1 false
-	// _,t,h,_ min,max = minMax(head, tail); max-min>1 true
-	minIdx := min(q.headIdx, q.tailIdx)
-	maxIdx := max(q.headIdx, q.tailIdx)
-	if q.tailIdx < q.headIdx {
-		return maxIdx-minIdx > 1
-	}
-
-	panic("impossible situation")
+	return q.curSize == q.initSize
 }
 
 // Push добавить значение в конец очереди (false, если очередь заполнена)
