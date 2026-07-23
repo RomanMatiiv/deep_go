@@ -105,9 +105,10 @@ func (q *CircularQueue) Push(value int) bool {
 		idx = q.tailIdx + 1
 		// _,head,_,_,tail
 
-		// _,_,_,head,tail
+		// [_,_,_,head]tail
 	} else if q.tailIdx == q.initSize && q.headIdx > 0 {
-		idx = 0
+		idx = 1
+		// [_,tail,_,head]=
 
 		// _,tail,_,head,_
 	} else if q.tailIdx < q.headIdx && q.headIdx > 0 {
@@ -121,6 +122,7 @@ func (q *CircularQueue) Push(value int) bool {
 	q.values[idx-1] = value
 	q.tailIdx = idx
 
+	q.curSize += 1
 	return true
 }
 
@@ -143,6 +145,25 @@ func (q *CircularQueue) Pop() bool {
 	if q.Empty() {
 		return false
 	}
+
+	// head,_,_,tail,_
+	if q.headIdx < q.tailIdx {
+		q.headIdx = q.headIdx + 1
+	}
+	// _,head,_,tail,_
+
+	// _,_,tail,head,_
+	// _,_,tail,_,head
+	if q.headIdx > q.tailIdx {
+		if q.headIdx < q.initSize {
+			q.headIdx += 1
+		}
+		q.headIdx = 0
+	}
+	// _,_,tail,_,head
+	// head,_,tail,_,_
+
+	q.curSize -= 1
 	return true
 }
 
@@ -151,6 +172,11 @@ func (q *CircularQueue) Front() int {
 	if q.Empty() {
 		return -1
 	}
-	//todo
-	return 1
+
+	// h,_,t,_
+	// h,t,_,_
+	// _,h,t,_
+	// _,t,h,_
+
+	return q.values[q.headIdx]
 }
