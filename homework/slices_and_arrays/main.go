@@ -157,8 +157,9 @@ func (q *CircularQueue) Pop() bool {
 	if q.headIdx > q.tailIdx {
 		if q.headIdx < q.initSize {
 			q.headIdx += 1
+		} else {
+			q.headIdx = 0
 		}
-		q.headIdx = 0
 	}
 	// _,_,tail,_,head
 	// head,_,tail,_,_
