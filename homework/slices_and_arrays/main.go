@@ -70,14 +70,11 @@ func NewCircularQueue(size int) CircularQueue {
 
 // Empty проверить пустая ли очередь
 func (q *CircularQueue) Empty() bool {
-	slog.Debug(fmt.Sprintf("Empty() when head=%d tail=%d", q.headIdx, q.tailIdx))
 	return q.curSize == 0
 }
 
 // Full проверить заполнена ли очередь
 func (q *CircularQueue) Full() bool {
-	slog.Debug(fmt.Sprintf("Full() when head=%d tail=%d", q.headIdx, q.tailIdx))
-
 	return q.curSize == q.initSize
 }
 
@@ -106,17 +103,13 @@ func (q *CircularQueue) Push(value int) bool {
 		// _,head,_,_,tail
 
 		// [_,_,_,head]tail
-	} else if q.tailIdx == q.initSize && q.headIdx > 0 {
+	} else if q.tailIdx == q.initSize {
 		idx = 1
-		// [_,tail,_,head]=
+		// [_,tail,_,head]
 
 		// _,tail,_,head,_
-	} else if q.tailIdx < q.headIdx && q.headIdx > 0 {
-		idx = min(0, q.headIdx, q.tailIdx)
-	}
-
-	if idx == -1 {
-		panic("out of range")
+	} else if q.tailIdx < q.headIdx {
+		idx = q.tailIdx + 1
 	}
 
 	q.values[idx-1] = value
@@ -154,8 +147,8 @@ func (q *CircularQueue) Pop() bool {
 
 	// _,_,tail,head,_
 	// _,_,tail,_,head
-	if q.headIdx > q.tailIdx {
-		if q.headIdx < q.initSize {
+	if q.headIdx >= q.tailIdx {
+		if q.headIdx+1 < q.initSize {
 			q.headIdx += 1
 		} else {
 			q.headIdx = 0
@@ -165,6 +158,12 @@ func (q *CircularQueue) Pop() bool {
 	// head,_,tail,_,_
 
 	q.curSize -= 1
+
+	if q.Empty() {
+		q.headIdx = 0
+		q.tailIdx = 0
+	}
+
 	return true
 }
 
@@ -173,11 +172,6 @@ func (q *CircularQueue) Front() int {
 	if q.Empty() {
 		return -1
 	}
-
-	// h,_,t,_
-	// h,t,_,_
-	// _,h,t,_
-	// _,t,h,_
 
 	return q.values[q.headIdx]
 }
