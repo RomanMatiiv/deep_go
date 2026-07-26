@@ -324,11 +324,30 @@ func TestPushIntoGapWhenWrapped(t *testing.T) {
 	queue.Pop()                          //_,2,3,4
 	queue.Pop()                          //_,_,3,4
 	queue.Push(5)                        //5,_,3,4
-	assert.True(t, queue.Push(6))
+	queue.Push(6)                        //5,6,3,4
 
 	assert.Equal(t, 3, queue.Front())
 	assert.Equal(t, 6, queue.Back())
 	assert.True(t, reflect.DeepEqual([]int{5, 6, 3, 4}, queue.values))
+}
+
+func TestPushAfterEmptyQueue(t *testing.T) {
+	const queueSize = 3
+	queue := NewCircularQueue(queueSize) //_,_,_
+
+	queue.Push(1) //1,_,_
+	queue.Push(2) //1,2,_
+	queue.Push(3) //1,2,3
+	queue.Pop()   //_,2,3
+	queue.Push(4) //4,2,3
+	queue.Pop()   //4,_,3
+	queue.Pop()   //4,_,_
+	queue.Pop()   //_,_,_ empty, но head=0 tail=1
+
+	assert.True(t, queue.Empty())
+	assert.True(t, queue.Push(10)) //10,_,_
+	assert.Equal(t, 10, queue.Front())
+	assert.Equal(t, 10, queue.Back())
 }
 
 func init() {
