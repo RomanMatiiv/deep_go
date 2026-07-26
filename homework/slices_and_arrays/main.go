@@ -52,9 +52,8 @@ type CircularQueue struct {
 	values   []int
 	initSize int
 	curSize  int
-	//curIdx int
-	headIdx int // всегда указывает на первый(или нулевой) элемент. Инвариант.
-	tailIdx int // всегда указывает на элемент следующий за последним. Инвариант.
+	headIdx  int // всегда указывает на первый(или нулевой) элемент. Инвариант.
+	tailIdx  int // всегда указывает на элемент следующий за последним. Инвариант.
 }
 
 func NewCircularQueue(size int) CircularQueue {
@@ -62,10 +61,9 @@ func NewCircularQueue(size int) CircularQueue {
 	return CircularQueue{
 		initSize: size,
 		curSize:  0,
-		//curIdx: 0,
-		headIdx: 0,
-		tailIdx: 0,
-		values:  make([]int, size, size)}
+		headIdx:  0,
+		tailIdx:  0,
+		values:   make([]int, size, size)}
 }
 
 // Empty проверить пустая ли очередь
