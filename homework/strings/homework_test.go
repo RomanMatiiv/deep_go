@@ -16,8 +16,6 @@ func TestCOWSmoke(t *testing.T) {
 }
 
 func TestCOWBufferEqualInitBuffer(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
