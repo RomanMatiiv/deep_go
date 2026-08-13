@@ -8,30 +8,146 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type COWBuffer struct {
-	data []byte
-	refs *int
-	// need to implement
+func TestCOWBufferEqualInitBuffer(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	assert.Equal(t, unsafe.SliceData(data), unsafe.SliceData(buffer.data))
 }
 
-func NewCOWBuffer(data []byte) COWBuffer {
-	return COWBuffer{} // need to implement
+func TestCOWBufferEqualClone(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	clone1 := buffer.Clone()
+
+	assert.Equal(t, unsafe.SliceData(buffer.data), unsafe.SliceData(clone1.data))
 }
 
-func (b *COWBuffer) Clone() COWBuffer {
-	return COWBuffer{} // need to implement
+func TestCOWEqualsClone(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	clone1 := buffer.Clone()
+	clone2 := buffer.Clone()
+
+	assert.Equal(t, unsafe.SliceData(clone1.data), unsafe.SliceData(clone2.data))
 }
 
-func (b *COWBuffer) Close() {
-	// need to implement
+func TestCOWNotCopyBufferWhenString(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	assert.True(t, (*byte)(unsafe.SliceData(data)) == unsafe.StringData(buffer.String()))
 }
 
-func (b *COWBuffer) Update(index int, value byte) bool {
-	return false // need to implement
+func TestCOWNotCopyBufferCloneWhenString(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	clone1 := buffer.Clone()
+	assert.True(t, (*byte)(unsafe.StringData(buffer.String())) == unsafe.StringData(clone1.String()))
 }
 
-func (b *COWBuffer) String() string {
-	return "" // need to implement
+func TestCOWBufferCopyingEqualWhenString(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	clone1 := buffer.Clone()
+	clone2 := buffer.Clone()
+
+	assert.True(t, (*byte)(unsafe.StringData(clone1.String())) == unsafe.StringData(clone2.String()))
+
+}
+
+func TestCOWChangeByteSuccess(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	assert.True(t, buffer.Update(0, 'g'))
+}
+
+func TestCOWChangeByteInvalidIndex(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	assert.False(t, buffer.Update(-1, 'g'))
+}
+
+func TestCOWChangeByteOutOfRange(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	assert.False(t, buffer.Update(4, 'g'))
+}
+
+func TestCOWEqualBufferAfterUpdate(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	buffer.Update(0, 'g')
+
+	assert.True(t, reflect.DeepEqual([]byte{'g', 'b', 'c', 'd'}, buffer.data))
+}
+
+func TestCOWCopyNotUpdateWhenSrcBufferUpdate(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	copy1 := buffer.Clone()
+	copy2 := buffer.Clone()
+
+	buffer.Update(0, 'g')
+
+	// равны сами массивы
+	assert.True(t, reflect.DeepEqual([]byte{'a', 'b', 'c', 'd'}, copy1.data))
+	assert.True(t, reflect.DeepEqual([]byte{'a', 'b', 'c', 'd'}, copy2.data))
+
+	// массивы указывают на один и тот же участок
+	assert.Equal(t, unsafe.SliceData(copy1.data), unsafe.SliceData(copy2.data))
+}
+
+func TestCOWCopyEqualAfterSrcUpdate(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	copy1 := buffer.Clone()
+
+	buffer.Update(0, 'g')
+
+	assert.NotEqual(t, unsafe.SliceData(buffer.data), unsafe.SliceData(copy1.data))
+}
+
+func TestCOWNotCopyIfReferOnlyOneObj(t *testing.T) {
+	data := []byte{'a', 'b', 'c', 'd'}
+	buffer := NewCOWBuffer(data)
+	defer buffer.Close()
+
+	copy1 := buffer.Clone()
+	copy2 := buffer.Clone()
+
+	copy1.Close()
+
+	previous := copy2.data
+	copy2.Update(0, 'f')
+	current := copy2.data
+
+	assert.Equal(t, unsafe.SliceData(previous), unsafe.SliceData(current))
+
+	copy2.Close()
+
 }
 
 func TestCOWBuffer(t *testing.T) {
