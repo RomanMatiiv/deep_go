@@ -31,16 +31,24 @@ type COWBuffer struct {
 }
 
 func NewCOWBuffer(data []byte) COWBuffer {
-	var cntRef *int
+	var cntRef int
 
 	return COWBuffer{
 		data: data,
-		refs: cntRef,
+		refs: &cntRef,
 	}
 }
 
 func (b *COWBuffer) Clone() COWBuffer {
-	return COWBuffer{} // todo implement
+	var cntRef int
+
+	cloneData := make([]byte, len(b.data))
+	copy(cloneData, b.data)
+
+	return COWBuffer{
+		data: cloneData,
+		refs: &cntRef,
+	}
 }
 
 func (b *COWBuffer) Close() {

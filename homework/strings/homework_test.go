@@ -24,7 +24,6 @@ func TestCOWBufferEqualInitBuffer(t *testing.T) {
 }
 
 func TestCOWBufferEqualClone(t *testing.T) {
-	t.Skipf("not implement")
 
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
@@ -36,8 +35,6 @@ func TestCOWBufferEqualClone(t *testing.T) {
 }
 
 func TestCOWEqualsClone(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
@@ -49,8 +46,6 @@ func TestCOWEqualsClone(t *testing.T) {
 }
 
 func TestCOWNotCopyBufferWhenString(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
