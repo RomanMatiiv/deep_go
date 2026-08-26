@@ -50,12 +50,17 @@ func TestCOWNotCopyBufferWhenString(t *testing.T) {
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
 
+	t.Logf("buffer.String()=%s", buffer.String())
+
+	t.Logf("ptr data: %v", unsafe.SliceData(data))
+	t.Logf("ptr buffer.String(): %v", unsafe.StringData(buffer.String()))
+
+	// Начало данных в памяти совпадает с началом данных изначального слайса. Те указывают на один и тот же участок
 	assert.True(t, (*byte)(unsafe.SliceData(data)) == unsafe.StringData(buffer.String()))
 }
 
 func TestCOWNotCopyBufferCloneWhenString(t *testing.T) {
-	t.Skipf("not implement")
-
+	// todo
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()

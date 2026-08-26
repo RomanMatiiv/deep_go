@@ -1,5 +1,9 @@
 package main
 
+import (
+	"unsafe"
+)
+
 // Домашнее задание №3
 //
 // В домашнем задании нужно реализовать COW (Copy-On-Write) буффер.
@@ -60,5 +64,9 @@ func (b *COWBuffer) Update(index int, value byte) bool {
 }
 
 func (b *COWBuffer) String() string {
-	return "" // todo implement
+	if len(b.data) == 0 {
+		return ""
+	}
+
+	return unsafe.String(unsafe.SliceData(b.data), len(b.data))
 }
