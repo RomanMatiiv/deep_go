@@ -60,18 +60,18 @@ func TestCOWNotCopyBufferWhenString(t *testing.T) {
 }
 
 func TestCOWNotCopyBufferCloneWhenString(t *testing.T) {
-	// todo
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
-
 	clone1 := buffer.Clone()
+
+	t.Logf("ptr buffer.String(): %v", unsafe.StringData(buffer.String()))
+	t.Logf("ptr clone1.String(): %v", unsafe.StringData(clone1.String()))
+
 	assert.True(t, (*byte)(unsafe.StringData(buffer.String())) == unsafe.StringData(clone1.String()))
 }
 
 func TestCOWBufferCopyingEqualWhenString(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
@@ -84,8 +84,6 @@ func TestCOWBufferCopyingEqualWhenString(t *testing.T) {
 }
 
 func TestCOWChangeByteSuccess(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()

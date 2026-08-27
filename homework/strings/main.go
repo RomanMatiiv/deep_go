@@ -44,15 +44,17 @@ func NewCOWBuffer(data []byte) COWBuffer {
 }
 
 func (b *COWBuffer) Clone() COWBuffer {
-	var cntRef int
+	//cloneData := make([]byte, len(b.data))
+	//copy(cloneData, b.data)
 
-	cloneData := make([]byte, len(b.data))
-	copy(cloneData, b.data)
+	*b.refs += 1
 
-	return COWBuffer{
-		data: cloneData,
-		refs: &cntRef,
-	}
+	return NewCOWBuffer(b.data)
+
+	//return COWBuffer{
+	//	data: cloneData,
+	//	refs: &cntRef,
+	//}
 }
 
 func (b *COWBuffer) Close() {
