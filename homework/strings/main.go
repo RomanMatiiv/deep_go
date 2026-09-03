@@ -62,7 +62,33 @@ func (b *COWBuffer) Close() {
 }
 
 func (b *COWBuffer) Update(index int, value byte) bool {
-	return false // todo implement
+	if !b.isValidUpdateParams(index, value) {
+		return false
+	}
+
+	if *b.refs == 0 {
+		b.data[index] = value
+	}
+	b.updateWithRefs(index, value)
+
+	return true
+}
+
+func (b *COWBuffer) isValidUpdateParams(index int, value byte) bool {
+	curLen := len(b.data)
+	if index < 0 || index >= curLen {
+		return false
+	}
+
+	if b.refs == nil || *b.refs < 0 {
+		panic("invalid ref count")
+	}
+
+	return true
+}
+
+func (b *COWBuffer) updateWithRefs(index int, value byte) {
+	// todo implement
 }
 
 func (b *COWBuffer) String() string {
