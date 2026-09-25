@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"log/slog"
 	"unsafe"
 )
 
@@ -44,6 +46,8 @@ func NewCOWBuffer(data []byte) COWBuffer {
 }
 
 func (b *COWBuffer) Clone() COWBuffer {
+	slog.Debug("Clone()")
+
 	//cloneData := make([]byte, len(b.data))
 	//copy(cloneData, b.data)
 
@@ -58,18 +62,22 @@ func (b *COWBuffer) Clone() COWBuffer {
 }
 
 func (b *COWBuffer) Close() {
-	// todo implement
+	b.refs = nil
+	b.data = nil
 }
 
 func (b *COWBuffer) Update(index int, value byte) bool {
+	slog.Debug(fmt.Sprintf("Update(%d, %b)", index, value))
+
 	if !b.isValidUpdateParams(index, value) {
 		return false
 	}
 
 	if *b.refs == 0 {
 		b.data[index] = value
+	} else {
+		b.updateWithRefs(index, value)
 	}
-	b.updateWithRefs(index, value)
 
 	return true
 }
@@ -88,7 +96,14 @@ func (b *COWBuffer) isValidUpdateParams(index int, value byte) bool {
 }
 
 func (b *COWBuffer) updateWithRefs(index int, value byte) {
-	// todo implement
+
+	newDataBuffer := make([]byte, len(b.data))
+	copy(newDataBuffer, b.data)
+
+	b.data = newDataBuffer
+	b.data[index] = value
+
+	*b.refs -= 1
 }
 
 func (b *COWBuffer) String() string {

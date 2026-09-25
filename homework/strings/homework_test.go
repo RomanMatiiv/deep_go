@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"log/slog"
+	"os"
 	"reflect"
 	"testing"
 	"unsafe"
@@ -118,8 +121,6 @@ func TestCOWEqualBufferAfterUpdate(t *testing.T) {
 }
 
 func TestCOWCopyNotUpdateWhenSrcBufferUpdate(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
@@ -138,22 +139,25 @@ func TestCOWCopyNotUpdateWhenSrcBufferUpdate(t *testing.T) {
 }
 
 func TestCOWCopyEqualAfterSrcUpdate(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
 
+	slog.Debug(fmt.Sprintf("buffer count ref: %d", *buffer.refs))
+
 	copy1 := buffer.Clone()
+	slog.Debug(fmt.Sprintf("buffer data ptr:%p, copy1 data ptr:%p", unsafe.SliceData(buffer.data), unsafe.SliceData(copy1.data)))
+
+	slog.Debug(fmt.Sprintf("buffer count ref: %d, copy1 count refs: %d", *buffer.refs, *copy1.refs))
 
 	buffer.Update(0, 'g')
+	slog.Debug(fmt.Sprintf("buffer count ref: %d, copy1 count refs: %d", *buffer.refs, *copy1.refs))
+	slog.Debug(fmt.Sprintf("buffer data ptr:%p, copy1 data ptr:%p", unsafe.SliceData(buffer.data), unsafe.SliceData(copy1.data)))
 
 	assert.NotEqual(t, unsafe.SliceData(buffer.data), unsafe.SliceData(copy1.data))
 }
 
 func TestCOWNotCopyIfReferOnlyOneObj(t *testing.T) {
-	t.Skipf("not implement")
-
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
@@ -174,7 +178,6 @@ func TestCOWNotCopyIfReferOnlyOneObj(t *testing.T) {
 }
 
 func TestCOWBuffer(t *testing.T) {
-	t.Skipf("not implement")
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
 	defer buffer.Close()
@@ -211,4 +214,15 @@ func TestCOWBuffer(t *testing.T) {
 	assert.Equal(t, unsafe.SliceData(previous), unsafe.SliceData(current))
 
 	copy2.Close()
+}
+
+func init() {
+
+	logHandler := slog.NewTextHandler(
+		os.Stderr,
+		&slog.HandlerOptions{Level: slog.LevelDebug})
+
+	logger := slog.New(logHandler)
+
+	slog.SetDefault(logger)
 }
