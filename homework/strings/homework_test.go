@@ -160,12 +160,11 @@ func TestCOWCopyEqualAfterSrcUpdate(t *testing.T) {
 func TestCOWNotCopyIfReferOnlyOneObj(t *testing.T) {
 	data := []byte{'a', 'b', 'c', 'd'}
 	buffer := NewCOWBuffer(data)
-	defer buffer.Close()
-
 	copy1 := buffer.Clone()
 	copy2 := buffer.Clone()
 
 	copy1.Close()
+	buffer.Close()
 
 	previous := copy2.data
 	copy2.Update(0, 'f')

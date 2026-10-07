@@ -48,21 +48,21 @@ func NewCOWBuffer(data []byte) COWBuffer {
 func (b *COWBuffer) Clone() COWBuffer {
 	slog.Debug("Clone()")
 
-	//cloneData := make([]byte, len(b.data))
-	//copy(cloneData, b.data)
-
 	*b.refs += 1
 
-	return NewCOWBuffer(b.data)
-
-	//return COWBuffer{
-	//	data: cloneData,
-	//	refs: &cntRef,
-	//}
+	return COWBuffer{
+		data: b.data,
+		refs: b.refs,
+	}
 }
 
 func (b *COWBuffer) Close() {
-	b.refs = nil
+	if *b.refs > 0 {
+		*b.refs -= 1
+	}
+
+	var refs int
+	b.refs = &refs
 	b.data = nil
 }
 
@@ -104,6 +104,9 @@ func (b *COWBuffer) updateWithRefs(index int, value byte) {
 	b.data[index] = value
 
 	*b.refs -= 1
+
+	var refs int
+	b.refs = &refs
 }
 
 func (b *COWBuffer) String() string {
